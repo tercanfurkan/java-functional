@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.tercanfurkan.javafunctional.api.AvailabilityInterface;
-import com.tercanfurkan.javafunctional.api.BomInterface;
 import com.tercanfurkan.javafunctional.api.BomProcessor;
 import com.tercanfurkan.javafunctional.provider.DataProvider;
 import org.junit.Test;

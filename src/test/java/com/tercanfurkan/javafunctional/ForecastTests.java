@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-import com.tercanfurkan.javafunctional.api.BomInterface;
 import com.tercanfurkan.javafunctional.api.BomProcessor;
 import com.tercanfurkan.javafunctional.api.ForecastInterface;
 import com.tercanfurkan.javafunctional.provider.DataProvider;
