@@ -31,8 +31,11 @@ FRIED_EGGS|OIL|||1
 
 #### API:
 It constructs a tree structure that implements the given API below:
+
 `Set<String> getNamesForProducts(String productCode)` for a given product code, anywhere in the tree, it returns the values of ancestor products in an unordered collection, like Set.
+
 `Set<String> getNamesForComponents(String productCode)` for a given product code, anywhere in the tree, it returns the values of child products in an unordered collection, like Set.
+
 `List<Map> getComponents(String productCode)` for a given product code, anywhere in the tree, it returns every component (children) for all levels. Returned value is an ordered list of key-value pairs (Maps) containing following information: product code, depth in the current tree, multiplier.
 
 #### Sample Output:
