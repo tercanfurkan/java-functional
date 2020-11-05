@@ -8,38 +8,69 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.MoreObjects;
 
 public class BillTree {
 	public static int INITIAL_DEPTH = 1;
-	
+
 	private Entry bill;
 	private Set<BillTree> children = new HashSet<>();
 	private BillTree parent;
 	private int depth;
 
-	public BillTree(Entry bill, BillTree parent) {
+	private BillTree(Entry bill, @Nullable BillTree parent) {
+		createBillTree(bill, parent);
+	}
+
+	private void createBillTree(Entry bill, @Nullable BillTree parent) {
 		this.bill = bill;
 		if (parent != null) {
 			this.parent = parent;
-			this.parent.getChildren().add(this);
+			this.parent.addChild(this);
 		}
 	}
 
-	public Entry getBill() {
-		return bill;
+	private boolean isLeaf() {
+		return this.children == null || this.children.isEmpty();
 	}
 
-	public Set<BillTree> getChildren() {
-		return children;
+	/**
+	 * If the date does not match the condition ( not between start and end date), the multiplier must be updated:
+	 * <br/> set multiplier active (1) if marked inactive (0)
+	 * <br/> set it inactive (0) if marked active (1)
+	 *
+	 * @param forDate the date to consider the multiplier value
+	 * @param multiplier the value to be updated
+	 * @return updated multiplier value
+	 */
+	private double getUpdatedBillMultiplier(LocalDate forDate, double multiplier) {
+		// only active or inactive after, or;
+		// only active or inactive before
+		double updatedMultiplier = multiplier;
+
+		if ((bill.startDate != null && bill.startDate.isAfter(forDate))
+			|| (bill.endDate != null && bill.endDate.isBefore(forDate)))
+			updatedMultiplier = updatedMultiplier != 0 ? 0 : 1;
+		return updatedMultiplier;
+	}
+
+	public static BillTree initBillTreeRoot() {
+		// the root tree is useless (no bill, no parent) other than storing all the bills as its children.
+		return new BillTree(Entry.NOOP(), null);
+	}
+
+	public Entry getBill() {
+		return this.bill;
+	}
+
+	public void addChild(BillTree child) {
+		this. children.add(child);
 	}
 	
 	public int getDepth() {
 		return depth;
-	}
-
-	public boolean isLeaf() {
-		return this.getChildren() == null || this.getChildren().isEmpty();
 	}
 
 	public Stream<BillTree> streamChildren() {
@@ -68,25 +99,6 @@ public class BillTree {
 			return Stream.concat(streamOfThis, 
 					children.stream().flatMap(child -> child.assignDepth(depth +1)));
 		}
-	}
-	
-	/**
-	 * If the date does not match the condition ( not between start and end date), the multiplier must be updated:
-	 * <br/> set multiplier active (1) if marked inactive (0)
-	 * <br/> set it inactive (0) if marked active (1)
-	 * 
-	 * @param forDate the date to consider the multiplier value
-	 * @param multiplier the value to be updated
-	 * @return updated multiplier value
-	 */
-	private double getUpdatedBillMultiplier(LocalDate forDate, double multiplier) {
-		// only active or inactive after, or;
-		// only active or inactive before
-		double updatedMultiplier = multiplier;
-		if ((bill.startDate != null && bill.startDate.isAfter(forDate))
-				|| (bill.endDate != null && bill.endDate.isBefore(forDate)))
-			updatedMultiplier = updatedMultiplier != 0 ? 0 : 1;
-		return updatedMultiplier;
 	}
 
 	public Stream<Map<String, Object>> streamChildren(int depth, LocalDate forDate) {
@@ -134,9 +146,9 @@ public class BillTree {
 				.collect(Collectors.toSet());
 		
 		if (parentTrees.isEmpty()) {
-			new BillTree(bill, this);
+			createBillTree(bill, this);
 		} else {
-			parentTrees.forEach(parent -> new BillTree(bill, parent));
+			parentTrees.forEach(parentTree -> createBillTree(bill, parentTree));
 		}
 	}
 
@@ -158,11 +170,8 @@ public class BillTree {
 			return false;
 		BillTree other = (BillTree) obj;
 		if (bill == null) {
-			if (other.bill != null)
-				return false;
-		} else if (!bill.equals(other.bill))
-			return false;
-		return true;
+			return other.bill == null;
+		} else return bill.equals(other.bill);
 	}
 
     @Override

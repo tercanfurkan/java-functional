@@ -14,6 +14,8 @@ import com.tercanfurkan.javafunctional.model.Entry;
 import com.tercanfurkan.javafunctional.model.Forecast;
 import com.tercanfurkan.javafunctional.model.BillTree;
 
+import static com.tercanfurkan.javafunctional.model.BillTree.initBillTreeRoot;
+
 
 public class BomProcessor implements DeconstructionInterface, AvailabilityInterface, ForecastInterface {
     
@@ -109,17 +111,14 @@ public class BomProcessor implements DeconstructionInterface, AvailabilityInterf
 	     * @return the list of bills in a tree structure
 	     */
 	    private static BillTree parseBillTree(List<Entry> bills) {
-	    	// the root tree is useless (no bill, no parent) other than storing all the bills as its children.
-	    	BillTree root = new BillTree(null, null);
+	    	BillTree root = initBillTreeRoot();
 	    	bills.forEach(root::add);
 	    	
 	    	//adopt missing children after first parsing round
 	    	root.streamChildren()
 	    		.forEach(child -> {
 	    			Stream<BillTree> prospectChildrenOfChild = root.getTreesOfProduct(child.getBill().getComponentCode());
-	    			prospectChildrenOfChild.forEach(c -> {
-						child.getChildren().add(c);
-	    			});
+	    			prospectChildrenOfChild.forEach(child::addChild);
 	    		});
 	    	return root;
 	    }

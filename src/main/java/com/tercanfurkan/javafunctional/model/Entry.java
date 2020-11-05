@@ -21,6 +21,10 @@ public class Entry {
         this.endDate = endDate;
     }
 
+    public static Entry NOOP() {
+    	return new Entry("", "", 1, null, null);
+	}
+
     @Nonnull
     public String getComponentCode() {
         return componentCode;
