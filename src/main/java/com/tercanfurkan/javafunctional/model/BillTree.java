@@ -82,10 +82,11 @@ public class BillTree {
 	private double getUpdatedBillMultiplier(LocalDate forDate, double multiplier) {
 		// only active or inactive after, or;
 		// only active or inactive before
+		double updatedMultiplier = multiplier;
 		if ((bill.startDate != null && bill.startDate.isAfter(forDate))
 				|| (bill.endDate != null && bill.endDate.isBefore(forDate)))
-			multiplier = multiplier != 0 ? 0 : 1;
-		return multiplier;
+			updatedMultiplier = updatedMultiplier != 0 ? 0 : 1;
+		return updatedMultiplier;
 	}
 
 	public Stream<Map<String, Object>> streamChildren(int depth, LocalDate forDate) {

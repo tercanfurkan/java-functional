@@ -1,6 +1,7 @@
 package com.tercanfurkan.javafunctional.api;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +52,7 @@ public class BomProcessor implements DeconstructionInterface, AvailabilityInterf
     @Override
     public Set<String> getNamesForComponents(String productCode) {
     	return rootTree.getTreesOfProduct(productCode)
-    			.flatMap(tree -> tree.streamChildren())
+    			.flatMap(BillTree::streamChildren)
     			.map(children -> children.getBill().componentCode)
     			.collect(Collectors.toSet());
     }
@@ -60,7 +61,7 @@ public class BomProcessor implements DeconstructionInterface, AvailabilityInterf
     public List<Map<String, Object>> getComponents(String productCode) {
     	return rootTree.getTreesOfProduct(productCode)
         		.flatMap(tree -> tree.assignDepth(BillTree.INITIAL_DEPTH))
-        		.sorted((child1, child2) -> Integer.compare(child1.getDepth(), child2.getDepth()))
+        		.sorted(Comparator.comparingInt(BillTree::getDepth))
         		.map(child -> {
         			Map<String, Object> childAsMap = new HashMap<>();
         			childAsMap.put("name", child.getBill().getComponentCode());
@@ -77,7 +78,7 @@ public class BomProcessor implements DeconstructionInterface, AvailabilityInterf
 	    		.flatMap(tree -> tree.streamChildren(BillTree.INITIAL_DEPTH, date));
 		Stream<List<Map<String, Object>>> componentsOfProductGrouped = Utils.groupByComponentName(activeAndInactiveComponentsOfProductForDate);
 		return Utils.mapReduceToSelectedMultiplier(componentsOfProductGrouped)
-		.sorted((child1, child2) -> (int) child1.get("depth") - (int) child2.get("depth")) 
+		.sorted(Comparator.comparingInt(child -> (int) child.get("depth")))
 		.collect(Collectors.toList());
 	}
 
@@ -117,9 +118,7 @@ public class BomProcessor implements DeconstructionInterface, AvailabilityInterf
 	    		.forEach(child -> {
 	    			Stream<BillTree> prospectChildrenOfChild = root.getTreesOfProduct(child.getBill().getComponentCode());
 	    			prospectChildrenOfChild.forEach(c -> {
-	    				if (!child.getChildren().contains(c)) {
-	    					child.getChildren().add(c);
-	    				}
+						child.getChildren().add(c);
 	    			});
 	    		});
 	    	return root;
@@ -145,7 +144,7 @@ public class BomProcessor implements DeconstructionInterface, AvailabilityInterf
 		private static Stream<Map<String, Object>> mapReduceToSelectedMultiplier(Stream<List<Map<String, Object>>> stream) {
 			return stream.map(list -> list.stream()
 							.reduce((i1, i2) -> (double) i1.get("multiplier") == 0 ? i1 : i2)
-							.orElse((Map<String, Object>) list.get(0)));
+							.orElse(list.get(0)));
 		}
 
 		/**
@@ -160,7 +159,7 @@ public class BomProcessor implements DeconstructionInterface, AvailabilityInterf
 								i1.put("multiplier", (double) i1.get("multiplier") + (double) i2.get("multiplier"));
 								return i1;
 							})
-							.orElse((Map<String, Object>) list.get(0)));
+							.orElse(list.get(0)));
 		}
 	}
 }

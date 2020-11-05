@@ -22,47 +22,8 @@ public class Entry {
     }
 
     @Nonnull
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(@Nonnull String code) {
-        this.code = code;
-    }
-
-    @Nonnull
     public String getComponentCode() {
         return componentCode;
-    }
-
-    public void setComponentCode(@Nonnull String componentCode) {
-        this.componentCode = componentCode;
-    }
-
-    public double getMultiplier() {
-        return multiplier;
-    }
-
-    public void setMultiplier(double multiplier) {
-        this.multiplier = multiplier;
-    }
-
-    @Nullable
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(@Nullable LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    @Nullable
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(@Nullable LocalDate endDate) {
-        this.endDate = endDate;
     }
 
     @Override
@@ -80,8 +41,8 @@ public class Entry {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((code == null) ? 0 : code.hashCode());
-		result = prime * result + ((componentCode == null) ? 0 : componentCode.hashCode());
+		result = prime * result + code.hashCode();
+		result = prime * result + componentCode.hashCode();
 		result = prime * result + ((endDate == null) ? 0 : endDate.hashCode());
 		long temp;
 		temp = Double.doubleToLongBits(multiplier);
@@ -99,16 +60,10 @@ public class Entry {
 		if (getClass() != obj.getClass())
 			return false;
 		Entry other = (Entry) obj;
-		if (code == null) {
-			if (other.code != null)
-				return false;
-		} else if (!code.equals(other.code))
-			return false;
-		if (componentCode == null) {
-			if (other.componentCode != null)
-				return false;
-		} else if (!componentCode.equals(other.componentCode))
-			return false;
+        if (!code.equals(other.code))
+            return false;
+        if (!componentCode.equals(other.componentCode))
+            return false;
 		if (endDate == null) {
 			if (other.endDate != null)
 				return false;
@@ -117,12 +72,7 @@ public class Entry {
 		if (Double.doubleToLongBits(multiplier) != Double.doubleToLongBits(other.multiplier))
 			return false;
 		if (startDate == null) {
-			if (other.startDate != null)
-				return false;
-		} else if (!startDate.equals(other.startDate))
-			return false;
-		return true;
-	}
-    
-    
+            return other.startDate == null;
+		} else return startDate.equals(other.startDate);
+    }
 }

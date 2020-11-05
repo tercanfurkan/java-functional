@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
+@FunctionalInterface
 public interface ForecastInterface {
-    public List<Map<String, Object>> getForecastsFor(LocalDate date);
+    List<Map<String, Object>> getForecastsFor(LocalDate date);
 }
