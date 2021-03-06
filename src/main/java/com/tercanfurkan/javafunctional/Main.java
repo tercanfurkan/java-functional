@@ -3,12 +3,12 @@ package com.tercanfurkan.javafunctional;
 import java.time.LocalDate;
 
 import com.tercanfurkan.javafunctional.provider.DataProvider;
-import com.tercanfurkan.javafunctional.api.BomProcessor;
+import com.tercanfurkan.javafunctional.api.IngredientsProcessor;
 
 public class Main {
     public static void main(String[] args) {
-        BomProcessor p = new BomProcessor(DataProvider.getEntriesForAvailabilityChecks());
+        IngredientsProcessor p = new IngredientsProcessor(DataProvider.getEntriesForAvailabilityChecks());
         
-        p.getComponents("BREAD", LocalDate.parse("2000-01-01")).forEach(System.out::println);
+        p.getIngredients("BREAD", LocalDate.parse("2000-01-01")).forEach(System.out::println);
     }
 }

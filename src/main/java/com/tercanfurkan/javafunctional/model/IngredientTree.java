@@ -12,20 +12,20 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.MoreObjects;
 
-public class BillTree {
+public class IngredientTree {
 	public static int INITIAL_DEPTH = 1;
 
-	private Entry bill;
-	private Set<BillTree> children = new HashSet<>();
-	private BillTree parent;
+	private Ingredient ingredient;
+	private Set<IngredientTree> children = new HashSet<>();
+	private IngredientTree parent;
 	private int depth;
 
-	private BillTree(Entry bill, @Nullable BillTree parent) {
-		createBillTree(bill, parent);
+	private IngredientTree(Ingredient ingredient, @Nullable IngredientTree parent) {
+		createBillTree(ingredient, parent);
 	}
 
-	private void createBillTree(Entry bill, @Nullable BillTree parent) {
-		this.bill = bill;
+	private void createBillTree(Ingredient bill, @Nullable IngredientTree parent) {
+		this.ingredient = bill;
 		if (parent != null) {
 			this.parent = parent;
 			this.parent.addChild(this);
@@ -50,22 +50,22 @@ public class BillTree {
 		// only active or inactive before
 		double updatedMultiplier = multiplier;
 
-		if ((bill.startDate != null && bill.startDate.isAfter(forDate))
-			|| (bill.endDate != null && bill.endDate.isBefore(forDate)))
+		if ((ingredient.startDate != null && ingredient.startDate.isAfter(forDate))
+			|| (ingredient.endDate != null && ingredient.endDate.isBefore(forDate)))
 			updatedMultiplier = updatedMultiplier != 0 ? 0 : 1;
 		return updatedMultiplier;
 	}
 
-	public static BillTree initBillTreeRoot() {
+	public static IngredientTree initBillTreeRoot() {
 		// the root tree is useless (no bill, no parent) other than storing all the bills as its children.
-		return new BillTree(Entry.NOOP(), null);
+		return new IngredientTree(Ingredient.NOOP(), null);
 	}
 
-	public Entry getBill() {
-		return this.bill;
+	public Ingredient getIngredient() {
+		return this.ingredient;
 	}
 
-	public void addChild(BillTree child) {
+	public void addChild(IngredientTree child) {
 		this. children.add(child);
 	}
 	
@@ -73,13 +73,13 @@ public class BillTree {
 		return depth;
 	}
 
-	public Stream<BillTree> streamChildren() {
+	public Stream<IngredientTree> streamChildren() {
 		// if its useless root, ignore. Otherwise add to stream
-		Stream<BillTree> streamOfThis = bill != null ? Stream.of(this) : Stream.empty();
+		Stream<IngredientTree> streamOfThis = ingredient != null ? Stream.of(this) : Stream.empty();
 		if (children == null)
 			return streamOfThis;
 		else {
-			return Stream.concat(streamOfThis, children.stream().flatMap(BillTree::streamChildren));
+			return Stream.concat(streamOfThis, children.stream().flatMap(IngredientTree::streamChildren));
 		}
 	}
 	
@@ -89,10 +89,10 @@ public class BillTree {
 	 * @param depth to be set for the level
 	 * @return stream trees having their depths assigned
 	 */
-	public Stream<BillTree> assignDepth(int depth) {
+	public Stream<IngredientTree> assignDepth(int depth) {
 		this.depth = depth;
 		// if its useless root, ignore. Otherwise add to stream
-		Stream<BillTree> streamOfThis = bill != null ? Stream.of(this) : Stream.empty();
+		Stream<IngredientTree> streamOfThis = ingredient != null ? Stream.of(this) : Stream.empty();
 		if (children == null)
 			return streamOfThis;
 		else {
@@ -102,10 +102,10 @@ public class BillTree {
 	}
 
 	public Stream<Map<String, Object>> streamChildren(int depth, LocalDate forDate) {
-		final double multiplier = getUpdatedBillMultiplier(forDate, bill.multiplier);
+		final double multiplier = getUpdatedBillMultiplier(forDate, ingredient.multiplier);
 		
 		Map<String, Object> map = new HashMap<>();
-		map.put("name", bill.componentCode);
+		map.put("name", ingredient.ingredientCode);
 		map.put("depth", depth);
 		map.put("multiplier", multiplier);
 		
@@ -120,29 +120,29 @@ public class BillTree {
 	public Stream<Map<String, Object>> streamLeafs(LocalDate forDate, double ancestorMultiplier) {
 		// if not leaf, pass ancestor multiplier times my multiplier
 		if (!this.isLeaf())
-			return children.stream().flatMap(c -> c.streamLeafs(forDate, bill.multiplier * ancestorMultiplier));
+			return children.stream().flatMap(c -> c.streamLeafs(forDate, ingredient.multiplier * ancestorMultiplier));
 
-		final double multiplier = getUpdatedBillMultiplier(forDate, bill.multiplier * ancestorMultiplier);
+		final double multiplier = getUpdatedBillMultiplier(forDate, ingredient.multiplier * ancestorMultiplier);
 		
 		Map<String, Object> map = new HashMap<>();
-		map.put("name", bill.componentCode);
+		map.put("name", ingredient.ingredientCode);
 		map.put("date", forDate);
 		map.put("multiplier", multiplier);
 		return Stream.of(map);
 	}
 
-	public Stream<BillTree> getTreesOfComponent(String componentCode) {
+	public Stream<IngredientTree> getIngredientTreeStream(String ingredientCode) {
 		return streamChildren()
-				.filter(child -> child.bill.componentCode.equals(componentCode));
+				.filter(child -> child.ingredient.ingredientCode.equals(ingredientCode));
 	}
 
-	public Stream<BillTree> getTreesOfProduct(String productCode) {
+	public Stream<IngredientTree> getProductTreeStream(String productCode) {
 		return streamChildren()
-				.filter(child -> child.bill.code.equals(productCode));
+				.filter(child -> child.ingredient.code.equals(productCode));
 	}
 
-	public void add(Entry bill) {
-		Set<BillTree> parentTrees = getTreesOfComponent(bill.code)
+	public void add(Ingredient bill) {
+		Set<IngredientTree> parentTrees = getIngredientTreeStream(bill.code)
 				.collect(Collectors.toSet());
 		
 		if (parentTrees.isEmpty()) {
@@ -156,7 +156,7 @@ public class BillTree {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((bill == null) ? 0 : bill.hashCode());
+		result = prime * result + ((ingredient == null) ? 0 : ingredient.hashCode());
 		return result;
 	}
 
@@ -168,17 +168,17 @@ public class BillTree {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		BillTree other = (BillTree) obj;
-		if (bill == null) {
-			return other.bill == null;
-		} else return bill.equals(other.bill);
+		IngredientTree other = (IngredientTree) obj;
+		if (ingredient == null) {
+			return other.ingredient == null;
+		} else return ingredient.equals(other.ingredient);
 	}
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
             .add("depth", depth)
-            .add("bill", bill)
+            .add("bill", ingredient)
             .add("parent", parent)
             .toString();
     }

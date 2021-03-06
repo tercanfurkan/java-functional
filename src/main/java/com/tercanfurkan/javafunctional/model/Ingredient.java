@@ -6,35 +6,35 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.MoreObjects;
 
-public class Entry {
+public class Ingredient {
     @Nonnull public String code;
-    @Nonnull public String componentCode;
+    @Nonnull public String ingredientCode;
     public double multiplier;
     @Nullable public LocalDate startDate;
     @Nullable public LocalDate endDate;
 
-    public Entry(@Nonnull String code, @Nonnull String componentCode, double multiplier, @Nullable LocalDate startDate, @Nullable LocalDate endDate) {
+    public Ingredient(@Nonnull String code, @Nonnull String ingredientCode, double multiplier, @Nullable LocalDate startDate, @Nullable LocalDate endDate) {
         this.code = code;
         this.multiplier = multiplier;
-        this.componentCode = componentCode;
+        this.ingredientCode = ingredientCode;
         this.startDate = startDate;
         this.endDate = endDate;
     }
 
-    public static Entry NOOP() {
-    	return new Entry("", "", 1, null, null);
+    public static Ingredient NOOP() {
+    	return new Ingredient("", "", 1, null, null);
 	}
 
     @Nonnull
-    public String getComponentCode() {
-        return componentCode;
+    public String getIngredientCode() {
+        return ingredientCode;
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
             .add("code", code)
-            .add("componentCode", componentCode)
+            .add("ingredientCode", ingredientCode)
             .add("multiplier", multiplier)
             .add("startDate", startDate)
             .add("endDate", endDate)
@@ -46,7 +46,7 @@ public class Entry {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + code.hashCode();
-		result = prime * result + componentCode.hashCode();
+		result = prime * result + ingredientCode.hashCode();
 		result = prime * result + ((endDate == null) ? 0 : endDate.hashCode());
 		long temp;
 		temp = Double.doubleToLongBits(multiplier);
@@ -63,10 +63,10 @@ public class Entry {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Entry other = (Entry) obj;
+		Ingredient other = (Ingredient) obj;
         if (!code.equals(other.code))
             return false;
-        if (!componentCode.equals(other.componentCode))
+        if (!ingredientCode.equals(other.ingredientCode))
             return false;
 		if (endDate == null) {
 			if (other.endDate != null)

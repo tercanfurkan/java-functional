@@ -10,7 +10,7 @@ public interface DeconstructionInterface {
      * For a given product code, anywhere in the tree, it returns the values of child products
      * in an unordered Set
      */
-    Set<String> getNamesForComponents(String productCode);
+    Set<String> getNamesForIngredients(String productCode);
 
     /**
      * For a given product code, anywhere in the tree, it returns the values of ancestor products
@@ -19,8 +19,8 @@ public interface DeconstructionInterface {
     Set<String> getNamesForProducts(String productCode);
 
     /**
-     * For a given product code, anywhere in the tree, it returns every component (children) for all levels.
+     * For a given product code, anywhere in the tree, it returns every ingredient (children) for all levels.
      * Returned value is an ordered list of key-value pairs.
      */
-    List<Map<String, Object>> getComponents(String productCode);
+    List<Map<String, Object>> getIngredients(String productCode);
 }

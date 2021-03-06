@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-import com.tercanfurkan.javafunctional.api.BomProcessor;
+import com.tercanfurkan.javafunctional.api.IngredientsProcessor;
 import com.tercanfurkan.javafunctional.api.ForecastInterface;
 import com.tercanfurkan.javafunctional.provider.DataProvider;
 import org.junit.Test;
@@ -19,9 +19,9 @@ public class ForecastTests {
     @Test
     public void testGetForecastsForBasicIngredients() {
         assertTrue("getForecastsFor(date) returns a list of maps containing the ingredient code (String), amount to order (double) and date (LocalDate).", true);
-        ForecastInterface processor = new BomProcessor(DataProvider.getEntriesForForecasts());
-        List<Map<String, Object>> components = processor.getForecastsFor(LocalDate.parse("2017-01-01"));
-        assertThat(components, hasItems(
+        ForecastInterface processor = new IngredientsProcessor(DataProvider.getEntriesForForecasts());
+        List<Map<String, Object>> ingredients = processor.getForecastsFor(LocalDate.parse("2017-01-01"));
+        assertThat(ingredients, hasItems(
             of("date", LocalDate.parse("2017-01-01"), "name", "FLOUR", "multiplier", 4.0),
             of("date", LocalDate.parse("2017-01-01"), "name", "YEAST", "multiplier", 2.0),
             of("date", LocalDate.parse("2017-01-01"), "name", "EGG_WHITE", "multiplier", 17.0),
@@ -31,8 +31,8 @@ public class ForecastTests {
             of("date", LocalDate.parse("2017-01-01"), "name", "BACON", "multiplier", 8.0)
         ));
 
-        components = processor.getForecastsFor(LocalDate.parse("2016-12-24"));
-        assertThat(components, hasItems(
+        ingredients = processor.getForecastsFor(LocalDate.parse("2016-12-24"));
+        assertThat(ingredients, hasItems(
             of("date", LocalDate.parse("2016-12-24"), "name", "FLOUR", "multiplier", 8.0),
             of("date", LocalDate.parse("2016-12-24"), "name", "HYPER_YEAST", "multiplier", 0.4),
             of("date", LocalDate.parse("2016-12-24"), "name", "EGG_WHITE", "multiplier", 24.0),

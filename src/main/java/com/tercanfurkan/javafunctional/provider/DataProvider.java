@@ -6,20 +6,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.opencsv.CSVReader;
-import com.tercanfurkan.javafunctional.model.Entry;
+import com.tercanfurkan.javafunctional.model.Ingredient;
 import com.tercanfurkan.javafunctional.model.Forecast;
 
 public class DataProvider {
 
-    public static List<Entry> getEntriesForDeconstruction() {
+    public static List<Ingredient> getEntriesForDeconstruction() {
         return getEntries("src/main/resources/deconstruction.csv");
     }
 
-    public static List<Entry> getEntriesForAvailabilityChecks() {
+    public static List<Ingredient> getEntriesForAvailabilityChecks() {
         return getEntries("src/main/resources/availability.csv");
     }
 
-    public static List<Entry> getEntriesForForecasts() {
+    public static List<Ingredient> getEntriesForForecasts() {
         return getEntries("src/main/resources/forecasts_input.csv");
     }
 
@@ -42,8 +42,8 @@ public class DataProvider {
         return forecasts;
     }
 
-    private static List<Entry> getEntries(String file) {
-        List<Entry> entries = new ArrayList<>();
+    private static List<Ingredient> getEntries(String file) {
+        List<Ingredient> entries = new ArrayList<>();
 
         try (
             CSVReader reader = new CSVReader(new FileReader(file), '|', '"')) {
@@ -52,8 +52,8 @@ public class DataProvider {
                 LocalDate startDate = row[2].isEmpty() ? null : LocalDate.parse(row[2]);
                 LocalDate endDate = row[3].isEmpty() ? null : LocalDate.parse(row[3]);
                 double multiplier = row[4].isEmpty() ? 1.0 : Double.parseDouble(row[4]);
-                Entry entry = new Entry(row[0], row[1], multiplier, startDate, endDate);
-                entries.add(entry);
+                Ingredient ingredient = new Ingredient(row[0], row[1], multiplier, startDate, endDate);
+                entries.add(ingredient);
             });
         } catch (Exception e) {
             e.printStackTrace();

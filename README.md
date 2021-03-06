@@ -114,7 +114,7 @@ This overloads the getIngredients interface to support date-specific queries for
 
 `List<Map> getIngredients(String productCode, LocalDate date)` 
 
-For a given product code and date, anywhere in the tree, it returns every component (children) for all levels including or excluding ingredients that are active and inactive for the given date. As before, the returned value is an ordered list of maps.
+For a given product code and date, anywhere in the tree, it returns every ingredient (children) for all levels including or excluding ingredients that are active and inactive for the given date. As before, the returned value is an ordered list of maps.
 
 #### Sample Output:
 ```
@@ -138,7 +138,7 @@ getIngredients("BREAD", "2016-12-25") => [
 ```
 
 ### #3 Ingredients Forecasting Interface
-Ordering basic ingredients is based on forecasts. Forecasts are supplied as a separate CSV, with a separate entry for each sandwich type and date. The data is provided by `DataProvider`.
+Ordering basic ingredients is based on forecasts. Forecasts are supplied as a separate CSV, with a separate ingredient for each sandwich type and date. The data is provided by `DataProvider`.
 
 code|ingredient_code|start_date|end_date|multiplier
 --- | --- | --- | --- | ---
