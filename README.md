@@ -32,11 +32,17 @@ FRIED_EGGS|OIL|||1
 #### Methods:
 It constructs a tree structure that implements the given methods:
 
-`Set<String> getNamesForProducts(String productCode)` for a given product code, anywhere in the tree, it returns the values of ancestor products in an unordered collection, like Set.
+`Set<String> getNamesForProducts(String productCode)`
 
-`Set<String> getNamesForIngredients(String productCode)` for a given product code, anywhere in the tree, it returns the values of child products in an unordered collection, like Set.
+For a given product code, anywhere in the tree, it returns the values of ancestor products in an unordered collection, like Set.
 
-`List<Map> getIngredients(String productCode)` for a given product code, anywhere in the tree, it returns every ingredient (children) for all levels. Returned value is an ordered list of key-value pairs (Maps) containing following information: product code, depth in the current tree, multiplier.
+`Set<String> getNamesForIngredients(String productCode)`
+
+For a given product code, anywhere in the tree, it returns the values of child products in an unordered collection, like Set.
+
+`List<Map> getIngredients(String productCode)`
+
+For a given product code, anywhere in the tree, it returns every ingredient (children) for all levels. Returned value is an ordered list of key-value pairs (Maps) containing following information: product code, depth in the current tree, multiplier.
 
 #### Sample Output:
 ```
@@ -106,7 +112,9 @@ FAKE_BACON|BACON_SPICE|||1
 #### Methods:
 This overloads the getIngredients interface to support date-specific queries for ingredients as follows: 
 
-`List<Map> getIngredients(String productCode, LocalDate date)` for a given product code and date, anywhere in the tree, it returns every component (children) for all levels including or excluding ingredients that are active and inactive for the given date. As before, the returned value is an ordered list of maps.
+`List<Map> getIngredients(String productCode, LocalDate date)` 
+
+For a given product code and date, anywhere in the tree, it returns every component (children) for all levels including or excluding ingredients that are active and inactive for the given date. As before, the returned value is an ordered list of maps.
 
 #### Sample Output:
 ```
@@ -161,9 +169,13 @@ FRIED_EGGS|5.0|2017-01-01
 CLUB_SANDWICH|4.0|2016-12-24
 
 #### Methods:
-`getForecastsFor()` calculates the need for specific basic ingredients for the given date. The output is the orders sent to suppliers for restocking the inventory for the given date. In reality there can be millions of forecasts for different products in different dates so performance can be considered in the future as well.
+`getForecastsFor()` 
 
-`List<Map> getForecastsFor(LocalDate date)` for the given date, it calculates the demand of basic ingredients (i.e. tree leaves) for all active products. Returned value is a list of maps containing the ingredient code (String), amount to order (double) and date (LocalDate).
+Calculates the need for specific basic ingredients for the given date. The output is the orders sent to suppliers for restocking the inventory for the given date. In reality there can be millions of forecasts for different products in different dates so performance can be considered in the future as well.
+
+`List<Map> getForecastsFor(LocalDate date)` 
+
+For the given date, it calculates the demand of basic ingredients (i.e. tree leaves) for all active products. Returned value is a list of maps containing the ingredient code (String), amount to order (double) and date (LocalDate).
 
 #### Sample Output:
 ```
